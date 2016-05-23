@@ -1,9 +1,9 @@
 public class QuickSort {
-   public static void sortiere(int x[], int y[]) {
+   public static void sortiere(int[] x, int[] y) {
       qSort(x,y, 0, x.length-1);
    }
     
-   public static void qSort(int x[],int y[], int links, int rechts) {
+   public static void qSort(int[] x, int[] y, int links, int rechts) {
       if (links < rechts) {
          int i = partition(x,y,links,rechts);
          qSort(x,y,links,i-1);
@@ -11,7 +11,7 @@ public class QuickSort {
       }
    }
     
-   public static int partition(int x[], int[] y, int links, int rechts) {
+   public static int partition(int[] x, int[] y, int links, int rechts) {
       float pivot;
       int i,j,help;
       pivot = (float)x[rechts]/(float)y[rechts];               
@@ -39,11 +39,4 @@ public class QuickSort {
         
       return i;
    }
-    
-   /*public static void main(String[] args) {
-      int[] liste = {0,9,4,6,2,8,5,1,7,3};
-      sortiere(liste);
-      for (int i=0; i<liste.length; i++) 
-         System.out.print(liste[i]+" ");         
-   }  */  
 }
