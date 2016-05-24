@@ -1,15 +1,24 @@
 import java.util.Random;
 
+import knapSack.XArt;
+
 public class knapSack {
-	static int n = 4;
-	static int[] p = new int[n];
-	static int[] w = new int[n];
-	static float[] x = new float[n];
-	static float[] xTilde = new float[n];
+	int[] p;
+	int[] w;
+	float[] x;
+	float[] xTilde;
 	//m = Maximalgewicht Rucksack
 
 	public enum XArt {
 	    TILDE, NICHTTILDE 
+	}
+	
+	public knapSack(int[] p, int[] w){
+		this.p = p;
+		this.w = w;
+		
+		x = new float[p.length];
+		xTilde = new float[p.length];
 	}
 	
 	public static void main(String[] args) {
@@ -37,52 +46,51 @@ public class knapSack {
 		}*/
 		
 		//Test knapSack Beispiel Skript
-		p[0] = 5;
-		p[1] = 12;
-		p[2] = 7;
-		p[3] = 12;
+		int[] tempP = {5, 12, 7, 12};
+		int[] tempW = {1, 3, 2, 4};
 		
-		w[0] = 1;
-		w[1] = 3;
-		w[2] = 2;
-		w[3] = 4;
+		QuickSort.sortiere(tempP, tempW);
 		
-		float[] ergebnis = knapSack(5);
+		knapSack kS = new knapSack(tempP, tempW);
+		
+		float[] ergebnis = kS.knapSackFunc(5);
 		for(int i = 0; i < ergebnis.length; i++){
 			System.out.print(ergebnis[i] + " ");
 		}
 	}
 	
 	
-	static float[] knapSack(int m){
+	float[] knapSackFunc(int m){
 		
-		greedyItem newItem = greedyKnapsack(0, n-1, XArt.TILDE, m);
+		greedyItem newItem = greedyKnapsack(0, p.length-1, XArt.TILDE, m);
 		xTilde[newItem.k] = 0;
-		doRec(0,m,0);
+		doRec(0,m,0,x);
 		return xTilde;	
 	}
 	
-	static void doRec(int end, int mStrich, float pStrich){
-		
+	void doRec(int end, int mStrich, float pStrich, float[] rechenX){
+		float[] valX = rechenX.clone();
 		int pTilde = 0;
-		for(int k = 0; k < n; k++){
+		for(int k = 0; k < p.length; k++){
 			pTilde += p[k] * xTilde[k];
 		}
 		
 		int j = end;
-		if(j <= (n-1)){
-			greedyItem newItem = greedyKnapsack(j, n, XArt.NICHTTILDE, mStrich);
+		if(j <= (p.length-1)){
+			x = valX.clone();
+			greedyItem newItem = greedyKnapsack(j, p.length-1, XArt.NICHTTILDE, mStrich);
+			valX = x.clone();
 			if(pStrich + newItem.d > pTilde){
-				x[j] = 0;
-				doRec(j+1, mStrich, pStrich);
+				valX[j] = 0;
+				doRec(j+1, mStrich, pStrich, valX);
 				if(w[j] <= mStrich){
-					x[j] = 1;
-					doRec(j+1, mStrich-w[newItem.k], pStrich+p[j]);
+					valX[j] = 1;
+					doRec(j+1, mStrich-w[j], pStrich+p[j], valX);//mStrich-w[newItem.k] ist falsch!
 					
 				}
 			}
 		}else if(pStrich > pTilde){
-			xTilde = x;		
+			xTilde = valX;		
 		}
 	}
 	
@@ -94,7 +102,7 @@ public class knapSack {
 	 * 
 	 * @return greedyItem
 	 */
-	static greedyItem greedyKnapsack(int start, int end, XArt xArt, int m){
+	greedyItem greedyKnapsack(int start, int end, XArt xArt, int m){
 		
 		int c = 0;
 		int k = 0;
@@ -107,7 +115,7 @@ public class knapSack {
 					xTilde[k] = 1;
 					d = d + p[k];
 				} else {
-					xTilde[k] = (w[k] - (c - m))/w[k];
+					xTilde[k] = ((float)(w[k] - (c - m)))/(float)w[k];
 					d = d + p[k]*xTilde[k];
 					break;
 				}
@@ -119,7 +127,7 @@ public class knapSack {
 					x[k] = 1;
 					d = d + p[k];
 				} else {
-					x[k] = (w[k] - (c - m))/w[k];
+					x[k] = ((float)(w[k] - (c - m)))/(float)w[k];
 					d = d + p[k]*x[k];
 					break;
 				}

@@ -18,7 +18,7 @@ public class QuickSort {
       i     = links;
       j     = rechts-1;
       while(i<=j) {
-         if ((float)x[i]/(float)y[i] > pivot) {     
+         if ((float)x[i]/(float)y[i] < pivot) {     
             // tausche x[i] und x[j]
             help = x[i]; 
             x[i] = x[j]; 
